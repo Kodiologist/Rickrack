@@ -37,6 +37,10 @@ sub decision
         ['ss', 'A'] => "\$$ssr $ssd",
         ['ll', 'B'] => "\$$llr $lld");}
 
+sub round
+   {my $x = shift;
+    int($x + ($x < 0 ? -0.5 : 0.5));}
+
 # ------------------------------------------------
 # Tasks
 # ------------------------------------------------
@@ -89,7 +93,7 @@ sub intertemporal_bisection
         my $llr = $o->save_once("itb_${k}_llr.$trial", sub
            {randelm @itb_llrs});
         my $ssr = $o->save_once("itb_${k}_ssr.$trial", sub
-           {my $x = int($llr * $discount);
+           {my $x = round($llr * $discount);
                 $x < 1
               ? 1
               : $x > 99 # Cap at two digits.
