@@ -12,11 +12,13 @@ use Rickrack_PBA_Density;
 # Parameters
 # ------------------------------------------------
 
-my $itb_trials = 20;
+my $itb_trials = 22;
+  # Includes 2 catch trials.
 my $itb_pc = .75;
 my @itb_llrs = 15 .. 95;
   # N.B. The minimum must be at least 2, so SSR can always
-  # safely be set to LLR - 1.
+  # safely be set to LLR - 1. The maximum cannot exceed 98,
+  # so SSR can safely be set to 99 for SS catch trails.
 
 # ------------------------------------------------
 # Declarations
@@ -52,6 +54,11 @@ sub intertemporal_bisection
         'Each trial will present you with a hypothetical choice between two amounts of money delivered to you at a given time in the future. Press the button for the option you would prefer.',
         'Even though these are completely hypothetical decisions, try your best to imagine what you would choose if you were really offered these choices.');
 
+    my $ss_catch_trial = $o->save_once("itb_${k}_catch_ss", sub
+       {randelm 1 .. $itb_trials});
+    my $ll_catch_trial = $o->save_once("itb_${k}_catch_ll", sub
+       {randelm grep {$_ != $ss_catch_trial} 1 .. $itb_trials});
+
     $o->loop("itb_${k}_iter", sub
        {my $trial = $_ + 1;
 
@@ -72,13 +79,22 @@ sub intertemporal_bisection
 
         $trial > $itb_trials and $o->done;
 
+        if ($trial == $ss_catch_trial or $trial == $ll_catch_trial)
+           {# Push ahead the real discount.
+            $o->save_once("itb_${k}_discount." . ($trial + 1), sub
+               {$discount});
+            # Set $discount according to the type of catch trial.
+            $discount = $trial == $ll_catch_trial ? 0.07 : 1.13;}
+
         my $llr = $o->save_once("itb_${k}_llr.$trial", sub
            {randelm @itb_llrs});
         my $ssr = $o->save_once("itb_${k}_ssr.$trial", sub
            {my $x = int($llr * $discount);
                 $x < 1
               ? 1
-              : $x > $llr
+              : $x > 99 # Cap at two digits.
+              ? 99
+              : $x >= $llr && $trial != $ss_catch_trial
               ? $llr - 1
               : $x});
 
