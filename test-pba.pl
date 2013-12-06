@@ -59,6 +59,7 @@ sub dhm
 is_approx dhm([0], [1]), .5;
 is_approx dhm([0, .5], [1, 1]), .5;
 is_approx dhm([0, .5], [2/3, 4/3]), .625;
+is_approx dhm([0, .75], [2/3, 2]), .75;
 is_approx
     dhm([map {$_/10} 0 .. 9],
         [(.5) x 5, 1, 1.5, 2, 2.5, .5]),
@@ -114,8 +115,8 @@ is $d2->serialize, Rickrack_PBA_Density->deserialize($d2->serialize)->serialize;
 
 my $trials = 20;
 sub estimate
-   {my $decider = shift;
-    my $d = $d;
+   {my ($prior, $decider) = @_;
+    my $d = $prior;
     foreach (1 .. $trials)
        {my $med = $d->median;
         my $higher = $decider->($med);
@@ -123,17 +124,21 @@ sub estimate
     $d->median}
 
 sub multi_estimate
-   {my $decider = shift;
+   {my ($prior, $decider) = @_;
     my @estimates =
         sort {$a <=> $b}
-        map {estimate($decider)}
+        map {estimate $prior, $decider}
         1 .. 100;
     sprintf '[%.03f -- %.03f -- %.03f]',
         $estimates[2], mean(@estimates), $estimates[97];}
 
-note multi_estimate sub {rand() > ilogit(20*$_[0] - 5)};
+note multi_estimate $d, sub {rand() > ilogit(20*$_[0] - 5)};
 
-note multi_estimate sub {rand() > ilogit(10*20*$_[0] - 10*15)};
+my $stronger_prior = $d->clone(x => [0, .25], density => [2, 2/3]);
+integral_ok $stronger_prior;
+note multi_estimate $stronger_prior, sub {rand() > ilogit(20*$_[0] - 5)};
+
+note multi_estimate $d, sub {rand() > ilogit(10*20*$_[0] - 10*15)};
 
 # ------------------------------------------------------------
 

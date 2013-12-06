@@ -70,7 +70,9 @@ sub intertemporal_bisection
            {my $json = $o->maybe_getu("itb_${k}_density");
             my $density = $json
               ? Rickrack_PBA_Density->deserialize($json)
-              : Rickrack_PBA_Density->new(lo => 0, hi => 1, pc => $itb_pc);
+              : Rickrack_PBA_Density
+                    ->new(lo => 0, hi => 1, pc => $itb_pc)
+                    ->clone(x => [0, .75], density => [2/3, 2]);
             $trial > 1 and $density = $density->update(
                 $o->getu("itb_${k}_ssr." . ($trial - 1)) /
                     $o->getu("itb_${k}_llr." . ($trial - 1)),
