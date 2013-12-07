@@ -40,6 +40,15 @@ sub decision
         ['ss', 'A'] => "\$$ssr $ssd",
         ['ll', 'B'] => "\$$llr $lld");}
 
+sub matching_trial
+   {my ($key, $ssr, $ssd, $lld) = @_;
+    $o->dollars_entry_page($key,
+        q(<p>Fill in the blank so you're indifferent between:</p>) .
+        '<ul class="itm">' .
+        sprintf('<li>$%02d %s', $ssr, $ssd) .
+        "<li>\$__ $lld" .
+        '</ul>');}
+
 sub round
    {my $x = shift;
     int($x + ($x < 0 ? -0.5 : 0.5));}
@@ -118,7 +127,7 @@ sub intertemporal_matching
         '<p class="long">In this task, you will answer a series of questions.',
         '<p class="long">Each trial will present you with a hypothetical choice between two amounts of money delivered to you at a given time in the future. However, one of the amounts will be left blank. For example, a trial might be:',
             '<ul class="itm">',
-            '<li>$15 today',
+            '<li>$20 today',
             '<li>$__ in 1 month',
             '</ul>',
         '<p class="long">Your task is fill in the blank with an amount that makes the two options equally appealing to you; that is, an amount that makes you indifferent between the two options.',
@@ -129,12 +138,8 @@ sub intertemporal_matching
 
         my $ssr = $o->save_once("itm_${k}_ssr.$trial", sub
            {randelm @itm_ssrs});
-        $o->dollars_entry_page("itm_${k}_response.$trial",
-            q(<p>Fill in the blank so you're indifferent between:</p>) .
-            '<ul class="itm">' .
-            sprintf('<li>$%02d %s', $ssr, $ssd) .
-            "<li>\$__ $lld" .
-            '</ul>');
+        matching_trial "itm_${k}_response.$trial",
+            $ssr, $ssd, $lld;
 
         $trial == $itm_trials and $o->done;});}
 
@@ -183,7 +188,7 @@ $o = new Tversky
     task => $p{task},
 
     preview => sub
-       {decision undef, 20, 'today', 60, 'in 1 month';},
+       {matching_trial undef, 20, 'today', 'in 1 month';},
 
     head => do {local $/; <DATA>},
     footer => "\n\n\n</body></html>\n",
