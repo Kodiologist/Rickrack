@@ -20,6 +20,9 @@ my @itb_llrs = 15 .. 95;
   # safely be set to LLR - 1. The maximum cannot exceed 98,
   # so SSR can safely be set to 99 for SS catch trails.
 
+my $itm_trials = 10;
+my @itm_ssrs = 1 .. 95;
+
 # ------------------------------------------------
 # Declarations
 # ------------------------------------------------
@@ -107,6 +110,33 @@ sub intertemporal_bisection
         decision "itb_${k}_choice.$trial",
             $ssr, $ssd,
             $llr, $lld;});}
+
+sub intertemporal_matching
+   {my ($k, $ssd, $lld) = @_;
+
+    $o->okay_page('itm_instructions', cat
+        '<p class="long">In this task, you will answer a series of questions.',
+        '<p class="long">Each trial will present you with a hypothetical choice between two amounts of money delivered to you at a given time in the future. However, one of the amounts will be left blank. For example, a trial might be:',
+            '<ul class="itm">',
+            '<li>$15 today',
+            '<li>$__ in 1 month',
+            '</ul>',
+        '<p class="long">Your task is fill in the blank with an amount that makes the two options equally appealing to you; that is, an amount that makes you indifferent between the two options.',
+        '<p class="long">Even though these are completely hypothetical decisions, try your best to imagine what you would do if you were really offered these choices.');
+
+    $o->loop("itm_${k}_iter", sub
+       {my $trial = $_ + 1;
+
+        my $ssr = $o->save_once("itm_${k}_ssr.$trial", sub
+           {randelm @itm_ssrs});
+        $o->dollars_entry_page("itm_${k}_response.$trial",
+            q(<p>Fill in the blank so you're indifferent between:</p>) .
+            '<ul class="itm">' .
+            sprintf('<li>$%02d %s', $ssr, $ssd) .
+            "<li>\$__ $lld" .
+            '</ul>');
+
+        $trial == $itm_trials and $o->done;});}
 
 sub criterion_questionnaire
    {$o->buttons_page('gender', p
@@ -207,5 +237,10 @@ __DATA__
 
     textarea.text_entry
        {width: 90%;}
+
+    ul.itm
+       {width: 10em;
+        margin-left: auto;
+        margin-right: auto;}
 
 </style>
