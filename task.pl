@@ -194,11 +194,11 @@ $o = new Tversky
     password_salt => $p{password_salt});
 
 $o->run(sub
-   {intertemporal_bisection 'near1', 'today', 'in 1 month';
-    intertemporal_bisection 'far1', 'in 1 month', 'in 2 months';
-    rest 'break_between_itb';
-    intertemporal_bisection 'near2', 'today', 'in 1 month';
-    intertemporal_bisection 'far2', 'in 1 month', 'in 2 months';
+   {intertemporal_matching 'near1', 'today', 'in 1 month';
+    intertemporal_matching 'far1', 'in 1 month', 'in 2 months';
+    rest 'break_between_itm';
+    intertemporal_matching 'near2', 'today', 'in 1 month';
+    intertemporal_matching 'far2', 'in 1 month', 'in 2 months';
 
     criterion_questionnaire;});
 
