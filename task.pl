@@ -240,6 +240,11 @@ __DATA__
        {text-align: left;
         vertical-align: middle;}
 
+    input.text_entry, textarea.text_entry
+       {border: thin solid black;
+        background-color: white;
+        color: black;}
+
     textarea.text_entry
        {width: 90%;}
 
