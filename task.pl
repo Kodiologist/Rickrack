@@ -159,7 +159,7 @@ sub criterion_questionnaire
         and $o->nonneg_int_entry_page('cigarette_packs_per_week', p
             q[How many packs of cigarettes do you smoke per week? (Enter 0 if you don't smoke cigarettes.)]);
     $o->nonneg_int_entry_page('exercise_hours_per_week', p
-        'How many hours per week are you physically active (for example, walking, working around the house, working out)?');
+        'How many hours per week are you physically active (for example, working out)?');
     $o->percent_entry_page('healthy_meals', p
         'For how many of your meals do you choose the amount or kind of food you eat with health or fitness concerns in mind?');
     $o->nonneg_int_entry_page('floss_per_week', p
