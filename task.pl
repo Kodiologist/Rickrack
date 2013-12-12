@@ -211,6 +211,14 @@ sub criterion_questionnaire
     $o->nonneg_int_entry_page('gamble_days_per_month', p
         'On how many days per month do you gamble? (Gambling includes such activities as playing at casinos, playing cards for stakes. buying lottery tickets, and betting on sports.)');}
 
+my %tasks =
+   (itf_near => sub {intertemporal_fixed "near$_", 0},
+    itf_far => sub {intertemporal_fixed "far$_", 30},
+    itb_near => sub {intertemporal_bisection "near$_", 'today', 'in 1 month'},
+    itb_far => sub {intertemporal_bisection "far$_", 'in 1 month', 'in 2 months'},
+    itm_near => sub {intertemporal_matching "near$_", 'today', 'in 1 month'},
+    itm_far => sub {intertemporal_matching "far$_", 'in 1 month', 'in 2 months'});
+
 # ------------------------------------------------
 # Mainline code
 # ------------------------------------------------
@@ -223,7 +231,12 @@ $o = new Tversky
     task => $p{task},
 
     preview => sub
-       {matching_trial undef, 20, 'today', 'in 1 month';},
+       {decision undef, 20, 'today', 60, 'in 1 month';},
+
+    after_consent_prep => sub
+       {my $o = shift;
+        $o->assign_permutation('task_order_1', ',', keys %tasks);
+        $o->assign_permutation('task_order_2', ',', keys %tasks);},
 
     head => do {local $/; <DATA>},
     footer => "\n\n\n</body></html>\n",
@@ -234,11 +247,10 @@ $o = new Tversky
     password_salt => $p{password_salt});
 
 $o->run(sub
-   {intertemporal_matching 'near1', 'today', 'in 1 month';
-    intertemporal_matching 'far1', 'in 1 month', 'in 2 months';
-    rest 'break_between_itm';
-    intertemporal_matching 'near2', 'today', 'in 1 month';
-    intertemporal_matching 'far2', 'in 1 month', 'in 2 months';
+
+   {foreach (1, 2)
+       {foreach my $task (split qr/,/, $o->getu('task_order_1'))
+           {$tasks{$task}->();}}
 
     criterion_questionnaire;});
 
