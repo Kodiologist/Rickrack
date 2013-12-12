@@ -5,12 +5,19 @@ my %p;
 
 use strict;
 
-use Tversky 'cat', 'randelm';
+use Tversky 'cat', 'randelm', 'shuffle';
 use Rickrack_PBA_Density;
 
 # ------------------------------------------------
 # Parameters
 # ------------------------------------------------
+
+# These are the medium-magnitude items from Table 3 (p. 81) of:
+# Kirby, K. N., Petry, N. M., & Bickel, W. K. (1999). Heroin addicts have higher discount rates for delayed rewards than non-drug-using controls. Journal of Experimental Psychology: General, 128(1), 78-87. doi:10.1037/0096-3445.128.1.78
+my @itf_ssr =       (54,   47,  54, 49, 40, 34, 27, 25, 20);
+my @itf_llr =       (55,   50,  60, 60, 55, 50, 50, 60, 55);
+my @itf_delaydiff = (117, 160, 111, 89, 62, 30, 21, 14,  7);
+my $itf_trials = @itf_ssr;
 
 my $itb_trials = 22;
   # Includes 2 catch trials.
@@ -61,6 +68,34 @@ sub rest
    {my $k = shift;
     $o->okay_page($k, p
        'Feel free to take a break before continuing.');}
+
+sub intertemporal_fixed
+   {my ($k, $front_end_delay) = @_;
+
+    $o->okay_page('itf_instructions', cat map {"<p class='long'>$_</p>"}
+        'In this task, you will answer a series of questions.',
+        'Each trial will present you with a hypothetical choice between two amounts of money delivered to you at a given time in the future. Press the button for the option you would prefer.',
+        'Even though these are completely hypothetical decisions, try your best to imagine what you would choose if you were really offered these choices.');
+
+    $o->save_once_atomic("itf_${k}_setup", sub
+       {my @is = shuffle 0 .. $itf_trials - 1;
+        foreach (1 .. $itf_trials)
+           {$o->save("itf_${k}_ssr.$_", $itf_ssr[$is[$_ - 1]]);
+            $o->save("itf_${k}_llr.$_", $itf_llr[$is[$_ - 1]]);
+            $o->save("itf_${k}_delaydiff.$_", $itf_delaydiff[$is[$_ - 1]]);}
+        1});
+
+    $o->loop("itf_${k}_iter", sub
+       {my $trial = $_ + 1;
+
+        decision "itf_${k}_choice.$trial",
+            $o->getu("itf_${k}_ssr.$trial"),
+            $front_end_delay ? "in $front_end_delay days" : 'today',
+            $o->getu("itf_${k}_llr.$trial"),
+            sprintf('in %d days',
+                $o->getu("itf_${k}_delaydiff.$trial") + $front_end_delay);
+
+        $trial == $itf_trials and $o->done;});}
 
 sub intertemporal_bisection
    {my ($k, $ssd, $lld) = @_;
