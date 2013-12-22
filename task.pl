@@ -283,7 +283,7 @@ __DATA__
     div.multiple_choice_box > div.row > div.button
        {padding-right: 1em;
         vertical-align: middle;}
-    div.multiple_choice_box > div.row > div.body
+    div.multiple_choice_box > div.row > .body
        {text-align: left;
         vertical-align: middle;}
 
