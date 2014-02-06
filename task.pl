@@ -249,7 +249,7 @@ $o = new Tversky
 $o->run(sub
 
    {foreach (1, 2)
-       {foreach my $task (split qr/,/, $o->getu('task_order_1'))
+       {foreach my $task (split qr/,/, $o->getu("task_order_$_"))
            {$tasks{$task}->();}}
 
     criterion_questionnaire;});
