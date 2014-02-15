@@ -1,38 +1,57 @@
 <!-- -*- HTML -*- -->
 
-<h1>Consent form</h1>
+<div style="text-align: center; color: black; background-color: white;">
+<img src="http://i.imgur.com/jMrHOvc.png" alt="Stony Brook University shield logo">
+<p style="font-weight: bold">Stony Brook<br><span style="color: #c41230">Research</span>
+<p>Committees on Research Involving Human Subjects<br>
+Established 1971
+</div>
 
 <dl>
-<dt>Project Title</dt><dd>Econometric Preferences</dd>
-<dt>Investigator</dt><dd>Kodi Arfer, M.A.</dd>
+<dt>Project Title</dt><dd>Intertemporal Choice - Online</dd>
+<dt>Principal Investigator</dt><dd>Christian Luhmann, Ph.D.</dd>
+<dt>Co-Investigators</dt><dd>Kodi Arfer (graduate student), Michael Bixter (graduate student), Elizabeth Trimber (graduate student), Pei-Pei Liu (graduate student)</dd>
+<dt>Department</dt><dd>Psychology</dd>
 </dl>
 
 <p><strong>You are being asked to be a volunteer in a research study.</strong>
 
 <h2>Purpose</h2>
-<p>The purpose of this study is to understand how people make decisions about rewards of money, and how these decisions relate to real-life outcomes such as health. Results will increase our understanding of the mental processes that make reward-related decisions possible.
+<p>The purpose of this study is to understand how people make decisions about rewards of money. Results will increase our understanding of the mental processes that make reward-related decisions possible. You will be one of about 100 participants.
 
-<h2>Procedure</h2>
-<p>If you decide to be in this study, you will make decisions about hypothetical situations involving money. You will also be asked questions about your personal habits and finances. There may be multiple conditions to which you may be assigned. If so, you will be assigned to your condition randomly (by chance).
+<h2>Procedures</h2>
+<p>If you decide to be in this study, you will read descriptions of pairs of rewards that vary in several ways, such as the amount of money offered or your chances of receiving the reward. You will then decide which of the two options you would prefer. There may be multiple conditions to which you may be assigned. If so, you will be assigned to your condition randomly (by chance).
 
-<h2>Risks, costs, and benefits</h2>
-<p>I foresee no risks, costs, or benefits to you that may arise from your participation in this study.
+<h2>Risks / Discomforts</h2>
+<p>There are no foreseeable risks or discomforts associated with your participation in this study.
+
+<h2>Benefits</h2>
+<p>There is no benefit expected as a result of your being in this study.
 
 <h2>Compensation</h2>
-<p>There is a reward of money assigned to the Human Intelligence Task (HIT) you have accepted. You will receive this reward after completing the HIT provided that, in my opinion, you answered my questions thoughtfully, honestly, and manually (that is to say, without having a computer program complete the task for you), and you did not attempt the experiment more than once.
+<p>There is a reward of money assigned to the Human Intelligence Task (HIT) you have accepted. You will receive this reward after completing the HIT provided that, in our opinion, you answered our questions thoughtfully, honestly, and manually (that is to say, without having a computer program complete the task for you), and you did not attempt the experiment more than once.
 
-<h2>Confidentiality (protecting your privacy in this study)</h2>
-<p>I will never ask for personally identifying information. Your Worker ID and IP address will not be included in any public releases of the study data.
+<h2>Confidentiality (Protecting Your Privacy in this Study)</h2>
+<p>We will never ask for personally identifying information. Your Worker ID and IP address will not be included in any public releases of the study data.
 
-<h2>Your rights</h2>
+<h2>Costs to You</h2>
+<p>There are no foreseeable costs for you as a subject in this study.
+
+<h2>Alternatives</h2>
+<p>Your alternative to being in this study is to simply not participate.
+
+<h2>Your Rights as a Research Subject</h2>
 <ul>
-<li>Your participation in this study is voluntary: you don't have to be in this study if you don't want to be.
+<li>Your participation in this study is voluntary. You do not have to be in this study if you don't want to be.
 <li>You have the right to change your mind and leave the study (by selecting "Return HIT") at any time without giving any reason.
 <li>Any new information that may make you change your mind about being in this study will be given to you.
-<li>You will not lose any of your legal rights by giving your consent.
+<li>You do not lose any of your legal rights by giving your consent.
 </ul>
 
-<h2>Questions about the study or your rights</h2>
-<p>If you have any questions, concerns, or complaints about the study, you may contact me, Kodi Arfer, by email at <code>arfer.net</code> as the user <code>kodi</code>.
+<h2>Questions About the Study or Your Rights as a Research Subject</h2>
+<ul>
+<li>If you have any questions, concerns, or complaints about the study, you may contact Dr. Luhmann by phone at (631) 632-7086 or by email at <code>christian.luhmann@stonybrook.edu</code>.
+<li>If you have any questions about your rights as a research subject or if you would like to obtain information or offer input, you may contact Ms. Judy Matuk, Committee on Research Involving Human Subjects, by phone at (631) 632-9036 or by email at <code>judy.matuk@stonybrook.edu</code>.
+</ul>
 
 <p style="margin-top: 2em;">If you type "I consent" below, it means that you have read (or have had read to you) the information given in this consent form, and you would like to be a volunteer in this study.
