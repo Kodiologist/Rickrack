@@ -52,11 +52,12 @@ sub maybe_offer_rest
 
 sub decision
    {my ($key, $ssr, $ssd, $llr, $lld) = @_;
-    maybe_offer_rest;
-    $o->okay_page('it_forcedchoice_instructions', cat map {"<p class='long'>$_</p>"}
-        'In this task, you will answer a series of questions.',
-        'Each trial will present you with a hypothetical choice between two amounts of money delivered to you at a given time in the future. Press the button for the option you would prefer.',
-        'Even though these are completely hypothetical decisions, try your best to imagine what you would choose if you were really offered these choices.');
+    if (defined $key)
+       {maybe_offer_rest;
+        $o->okay_page('it_forcedchoice_instructions', cat map {"<p class='long'>$_</p>"}
+            'In this task, you will answer a series of questions.',
+            'Each trial will present you with a hypothetical choice between two amounts of money delivered to you at a given time in the future. Press the button for the option you would prefer.',
+            'Even though these are completely hypothetical decisions, try your best to imagine what you would choose if you were really offered these choices.');}
     $_ = sprintf '%02d', $_ foreach $ssr, $llr;
     $o->multiple_choice_page($key,
         p 'Which would you prefer?',
@@ -65,16 +66,17 @@ sub decision
 
 sub matching_trial
    {my ($key, $ssr, $ssd, $lld) = @_;
-    maybe_offer_rest;
-    $o->okay_page('itm_instructions', cat
-        '<p class="long">In this task, you will answer a series of questions.',
-        '<p class="long">Each trial will present you with a hypothetical choice between two amounts of money delivered to you at a given time in the future. However, one of the amounts will be left blank. For example, a trial might be:',
-            '<ul class="itm">',
-            '<li>$20 today',
-            '<li>$__ in 1 month',
-            '</ul>',
-        '<p class="long">Your task is fill in the blank with an amount that makes the two options equally appealing to you; that is, an amount that makes you indifferent between the two options.',
-        '<p class="long">Even though these are completely hypothetical decisions, try your best to imagine what you would do if you were really offered these choices.');
+    if (defined $key)
+       {maybe_offer_rest;
+        $o->okay_page('itm_instructions', cat
+            '<p class="long">In this task, you will answer a series of questions.',
+            '<p class="long">Each trial will present you with a hypothetical choice between two amounts of money delivered to you at a given time in the future. However, one of the amounts will be left blank. For example, a trial might be:',
+                '<ul class="itm">',
+                '<li>$20 today',
+                '<li>$__ in 1 month',
+                '</ul>',
+            '<p class="long">Your task is fill in the blank with an amount that makes the two options equally appealing to you; that is, an amount that makes you indifferent between the two options.',
+        '<p class="long">Even though these are completely hypothetical decisions, try your best to imagine what you would do if you were really offered these choices.');}
     $o->dollars_entry_page($key,
         q(<p>Fill in the blank so you're indifferent between:</p>) .
         '<ul class="itm">' .
