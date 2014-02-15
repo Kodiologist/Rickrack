@@ -60,6 +60,13 @@ sub round
    {my $x = shift;
     int($x + ($x < 0 ? -0.5 : 0.5));}
 
+sub forced_choice_instructions
+   {$o->okay_page('it_forcedchoice_instructions', cat map {"<p class='long'>$_</p>"}
+        'In this task, you will answer a series of questions.',
+        'Each trial will present you with a hypothetical choice between two amounts of money delivered to you at a given time in the future. Press the button for the option you would prefer.',
+        'Even though these are completely hypothetical decisions, try your best to imagine what you would choose if you were really offered these choices.');}
+
+
 # ------------------------------------------------
 # Tasks
 # ------------------------------------------------
@@ -72,10 +79,7 @@ sub rest
 sub intertemporal_fixed
    {my ($k, $front_end_delay) = @_;
 
-    $o->okay_page('itf_instructions', cat map {"<p class='long'>$_</p>"}
-        'In this task, you will answer a series of questions.',
-        'Each trial will present you with a hypothetical choice between two amounts of money delivered to you at a given time in the future. Press the button for the option you would prefer.',
-        'Even though these are completely hypothetical decisions, try your best to imagine what you would choose if you were really offered these choices.');
+    forced_choice_instructions;
 
     $o->save_once_atomic("itf_${k}_setup", sub
        {my @is = shuffle 0 .. $itf_trials - 1;
@@ -100,10 +104,7 @@ sub intertemporal_fixed
 sub intertemporal_bisection
    {my ($k, $ssd, $lld) = @_;
 
-    $o->okay_page('itb_instructions', cat map {"<p class='long'>$_</p>"}
-        'In this task, you will answer a series of questions.',
-        'Each trial will present you with a hypothetical choice between two amounts of money delivered to you at a given time in the future. Press the button for the option you would prefer.',
-        'Even though these are completely hypothetical decisions, try your best to imagine what you would choose if you were really offered these choices.');
+    forced_choice_instructions;
 
     my $ss_catch_trial = $o->save_once("itb_${k}_catch_ss", sub
        {randelm 1 .. $itb_trials});
