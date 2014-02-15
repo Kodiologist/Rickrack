@@ -12,6 +12,10 @@ use Rickrack_PBA_Density;
 # Parameters
 # ------------------------------------------------
 
+my $break_interval = 50;
+  # We'll offer the subject a break after every
+  # $break_interval trials.
+
 # These are the medium-magnitude items from Table 3 (p. 81) of:
 # Kirby, K. N., Petry, N. M., & Bickel, W. K. (1999). Heroin addicts have higher discount rates for delayed rewards than non-drug-using controls. Journal of Experimental Psychology: General, 128(1), 78-87. doi:10.1037/0096-3445.128.1.78
 my @itf_ssr =       (54,   47,  54, 49, 40, 34, 27, 25, 20);
@@ -36,11 +40,23 @@ my @itm_ssrs = 1 .. 95;
 
 my $o; # Will be our Tversky object.
 
+our $total_trials = 0;
+
 sub p ($)
    {"<p>$_[0]</p>"}
 
+sub maybe_offer_rest
+   {$total_trials and $total_trials % $break_interval == 0 and
+        $o->okay_page("break.$total_trials",
+            '<p>Feel free to take a break before continuing.</p>');}
+
 sub decision
    {my ($key, $ssr, $ssd, $llr, $lld) = @_;
+    maybe_offer_rest;
+    $o->okay_page('it_forcedchoice_instructions', cat map {"<p class='long'>$_</p>"}
+        'In this task, you will answer a series of questions.',
+        'Each trial will present you with a hypothetical choice between two amounts of money delivered to you at a given time in the future. Press the button for the option you would prefer.',
+        'Even though these are completely hypothetical decisions, try your best to imagine what you would choose if you were really offered these choices.');
     $_ = sprintf '%02d', $_ foreach $ssr, $llr;
     $o->multiple_choice_page($key,
         p 'Which would you prefer?',
@@ -49,6 +65,16 @@ sub decision
 
 sub matching_trial
    {my ($key, $ssr, $ssd, $lld) = @_;
+    maybe_offer_rest;
+    $o->okay_page('itm_instructions', cat
+        '<p class="long">In this task, you will answer a series of questions.',
+        '<p class="long">Each trial will present you with a hypothetical choice between two amounts of money delivered to you at a given time in the future. However, one of the amounts will be left blank. For example, a trial might be:',
+            '<ul class="itm">',
+            '<li>$20 today',
+            '<li>$__ in 1 month',
+            '</ul>',
+        '<p class="long">Your task is fill in the blank with an amount that makes the two options equally appealing to you; that is, an amount that makes you indifferent between the two options.',
+        '<p class="long">Even though these are completely hypothetical decisions, try your best to imagine what you would do if you were really offered these choices.');
     $o->dollars_entry_page($key,
         q(<p>Fill in the blank so you're indifferent between:</p>) .
         '<ul class="itm">' .
@@ -60,26 +86,12 @@ sub round
    {my $x = shift;
     int($x + ($x < 0 ? -0.5 : 0.5));}
 
-sub forced_choice_instructions
-   {$o->okay_page('it_forcedchoice_instructions', cat map {"<p class='long'>$_</p>"}
-        'In this task, you will answer a series of questions.',
-        'Each trial will present you with a hypothetical choice between two amounts of money delivered to you at a given time in the future. Press the button for the option you would prefer.',
-        'Even though these are completely hypothetical decisions, try your best to imagine what you would choose if you were really offered these choices.');}
-
-
 # ------------------------------------------------
 # Tasks
 # ------------------------------------------------
 
-sub rest
-   {my $k = shift;
-    $o->okay_page($k, p
-       'Feel free to take a break before continuing.');}
-
 sub intertemporal_fixed
    {my ($k, $front_end_delay) = @_;
-
-    forced_choice_instructions;
 
     $o->save_once_atomic("itf_${k}_setup", sub
        {my @is = shuffle 0 .. $itf_trials - 1;
@@ -91,6 +103,7 @@ sub intertemporal_fixed
 
     $o->loop("itf_${k}_iter", sub
        {my $trial = $_ + 1;
+        local $total_trials = $total_trials + $trial - 1;
 
         decision "itf_${k}_choice.$trial",
             $o->getu("itf_${k}_ssr.$trial"),
@@ -99,12 +112,12 @@ sub intertemporal_fixed
             sprintf('in %d days',
                 $o->getu("itf_${k}_delaydiff.$trial") + $front_end_delay);
 
-        $trial == $itf_trials and $o->done;});}
+        $trial == $itf_trials and $o->done;});
+
+    $total_trials += $itf_trials;}
 
 sub intertemporal_bisection
    {my ($k, $ssd, $lld) = @_;
-
-    forced_choice_instructions;
 
     my $ss_catch_trial = $o->save_once("itb_${k}_catch_ss", sub
        {randelm 1 .. $itb_trials});
@@ -113,6 +126,7 @@ sub intertemporal_bisection
 
     $o->loop("itb_${k}_iter", sub
        {my $trial = $_ + 1;
+        local $total_trials = $total_trials + $trial - 1;
 
         my $discount = $o->save_once_atomic("itb_${k}_discount.$trial", sub
            {my $json = $o->maybe_getu("itb_${k}_density");
@@ -154,30 +168,25 @@ sub intertemporal_bisection
 
         decision "itb_${k}_choice.$trial",
             $ssr, $ssd,
-            $llr, $lld;});}
+            $llr, $lld;});
+
+    $total_trials += $itb_trials;}
 
 sub intertemporal_matching
    {my ($k, $ssd, $lld) = @_;
 
-    $o->okay_page('itm_instructions', cat
-        '<p class="long">In this task, you will answer a series of questions.',
-        '<p class="long">Each trial will present you with a hypothetical choice between two amounts of money delivered to you at a given time in the future. However, one of the amounts will be left blank. For example, a trial might be:',
-            '<ul class="itm">',
-            '<li>$20 today',
-            '<li>$__ in 1 month',
-            '</ul>',
-        '<p class="long">Your task is fill in the blank with an amount that makes the two options equally appealing to you; that is, an amount that makes you indifferent between the two options.',
-        '<p class="long">Even though these are completely hypothetical decisions, try your best to imagine what you would do if you were really offered these choices.');
-
     $o->loop("itm_${k}_iter", sub
        {my $trial = $_ + 1;
+        local $total_trials = $total_trials + $trial - 1;
 
         my $ssr = $o->save_once("itm_${k}_ssr.$trial", sub
            {randelm @itm_ssrs});
         matching_trial "itm_${k}_response.$trial",
             $ssr, $ssd, $lld;
 
-        $trial == $itm_trials and $o->done;});}
+        $trial == $itm_trials and $o->done;});
+
+    $total_trials += $itm_trials;}
 
 sub criterion_questionnaire
    {$o->buttons_page('gender', p
