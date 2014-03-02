@@ -7,6 +7,7 @@ use strict;
 
 use Tversky 'cat', 'randelm', 'shuffle';
 use Rickrack_PBA_Density;
+use File::Slurp 'slurp';
 
 # ------------------------------------------------
 # Parameters
@@ -190,6 +191,11 @@ sub intertemporal_matching
 
     $total_trials += $itm_trials;}
 
+sub debriefing
+   {$o->okay_page('debriefing',
+        sprintf '<div class="debriefing">%s</div>',
+        scalar slurp $p{debriefing_path});}
+
 my %tasks =
    (itf_near => sub {intertemporal_fixed "near$_", 0},
     itf_far => sub {intertemporal_fixed "far$_", 30},
@@ -228,7 +234,9 @@ $o->run(sub
 
    {foreach (3)
        {foreach my $task (split qr/,/, $o->getu("task_order_$_"))
-           {$tasks{$task}->();}}});
+           {$tasks{$task}->();}}
+
+    debriefing;});
 
 __DATA__
 
@@ -240,7 +248,7 @@ __DATA__
     h1, form, div.expbody p
        {text-align: center;}
 
-    div.expbody p.long
+    div.expbody p.long, div.debriefing p
        {text-align: left;}
 
     input.consent_statement
