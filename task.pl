@@ -47,14 +47,14 @@ sub p ($)
 
 sub maybe_offer_rest
    {$total_trials and $total_trials % $break_interval == 0 and
-        $o->okay_page("break.$total_trials",
+        $o->okay_page("break_s2.$total_trials",
             '<p>Feel free to take a break before continuing.</p>');}
 
 sub decision
    {my ($key, $ssr, $ssd, $llr, $lld) = @_;
     if (defined $key)
        {maybe_offer_rest;
-        $o->okay_page('it_forcedchoice_instructions', cat map {"<p class='long'>$_</p>"}
+        $o->okay_page('it_forcedchoice_instructions_s2', cat map {"<p class='long'>$_</p>"}
             'In this task, you will answer a series of questions.',
             'Each trial will present you with a hypothetical choice between two amounts of money delivered to you at a given time in the future. Press the button for the option you would prefer.',
             'Even though these are completely hypothetical decisions, try your best to imagine what you would choose if you were really offered these choices.');}
@@ -68,7 +68,7 @@ sub matching_trial
    {my ($key, $ssr, $ssd, $lld) = @_;
     if (defined $key)
        {maybe_offer_rest;
-        $o->okay_page('itm_instructions', cat
+        $o->okay_page('itm_instructions_s2', cat
             '<p class="long">In this task, you will answer a series of questions.',
             '<p class="long">Each trial will present you with a hypothetical choice between two amounts of money delivered to you at a given time in the future. However, one of the amounts will be left blank. For example, a trial might be:',
                 '<ul class="itm">',
@@ -214,8 +214,7 @@ $o = new Tversky
 
     after_consent_prep => sub
        {my $o = shift;
-        $o->assign_permutation('task_order_1', ',', keys %tasks);
-        $o->assign_permutation('task_order_2', ',', keys %tasks);},
+        $o->assign_permutation('task_order_3', ',', keys %tasks);},
 
     head => do {local $/; <DATA>},
     footer => "\n\n\n</body></html>\n",
@@ -227,7 +226,7 @@ $o = new Tversky
 
 $o->run(sub
 
-   {foreach (1, 2)
+   {foreach (3)
        {foreach my $task (split qr/,/, $o->getu("task_order_$_"))
            {$tasks{$task}->();}}});
 
