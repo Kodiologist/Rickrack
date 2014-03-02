@@ -190,39 +190,6 @@ sub intertemporal_matching
 
     $total_trials += $itm_trials;}
 
-sub criterion_questionnaire
-   {$o->buttons_page('gender', p
-        'Are you male or female?',
-        'Male', 'Female');
-    $o->nonneg_int_entry_page('age', p
-        'How old are you?');
-    $o->length_entry_page('height_m', p
-        'How tall are you?');
-    $o->weight_entry_page('weight_kg', p
-        'How much do you weigh?');
-    $o->yesno_page('tobacco', p
-        'Do you use tobacco?');
-    $o->getu('tobacco') eq 'Yes'
-        and $o->nonneg_int_entry_page('cigarette_packs_per_week', p
-            q[How many packs of cigarettes do you smoke per week? (Enter 0 if you don't smoke cigarettes.)]);
-    $o->nonneg_int_entry_page('exercise_hours_per_week', p
-        'How many hours per week are you physically active (for example, working out)?');
-    $o->percent_entry_page('healthy_meals', p
-        'For how many of your meals do you choose the amount or kind of food you eat with health or fitness concerns in mind?');
-    $o->nonneg_int_entry_page('floss_per_week', p
-        'How many times per week do you use dental floss?');
-    $o->yesno_page('credit_card', p
-        'Have you used a credit card at all in the past two years?');
-    if ($o->getu('credit_card') eq 'Yes')
-       {$o->nonneg_int_entry_page('credit_card_late_fees', p
-            'Over the past two years, how many times were you charged a late fee for making a credit card payment after the deadline?');
-        $o->percent_entry_page('credit_card_subpayment', p
-            'Over the past two years, how many of your credit-card payments were for less than your total balance?');}
-    $o->percent_entry_page('income_saved', p
-        'Over the past two years, how much of your income have you saved? (Please include savings into retirement plans and any other form of savings that you do.)');
-    $o->nonneg_int_entry_page('gamble_days_per_month', p
-        'On how many days per month do you gamble? (Gambling includes such activities as playing at casinos, playing cards for stakes. buying lottery tickets, and betting on sports.)');}
-
 my %tasks =
    (itf_near => sub {intertemporal_fixed "near$_", 0},
     itf_far => sub {intertemporal_fixed "far$_", 30},
@@ -262,9 +229,7 @@ $o->run(sub
 
    {foreach (1, 2)
        {foreach my $task (split qr/,/, $o->getu("task_order_$_"))
-           {$tasks{$task}->();}}
-
-    criterion_questionnaire;});
+           {$tasks{$task}->();}}});
 
 __DATA__
 
