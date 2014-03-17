@@ -5,15 +5,15 @@ import argparse, json, time
 import boto.mturk.connection
 
 EMAIL_SUBJECT = 'Invitation to participate in a new HIT'
-EMAIL_BODY = '\n'.join(['You previously participated in the study "Economic Decision-Making" on Mechanical Turk. You are invited to participate in a follow-up HIT. The task will be similar, but less than half as long will as in the first session, so the reward is now $0.50 rather than $1.00. Here is the HIT:',
+EMAIL_BODY = '\n'.join(['You previously participated in the study "Economic Decision-Making" on Mechanical Turk. You are invited to participate in a follow-up HIT. The task will be similar, but less than half as long as the first HIT, so the reward is now $0.50 rather than $1.00. Here is the HIT:',
     '',
-    '[URL GOES HERE]'])
+    'https://www.mturk.com/mturk/preview?groupId=22S6R70G5R98HHWI0FYWZSTNYLRQAN'])
 
 def f():
     parser = argparse.ArgumentParser()
     parser.add_argument('JSON_PATH',
         help = 'path to data file')
-    parser.add_argument('N',
+    parser.add_argument('N', type = int,
         help = 'number of new workers to admit')
     args = parser.parse_args()
     return (args.JSON_PATH, args.N)
